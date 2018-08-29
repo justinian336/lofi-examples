@@ -1,25 +1,25 @@
 package models
 
-import java.util.UUID
-
-import distance.DistanceAlgos
+import distance.Point.rnd
 import lof.LOFDataPoint
 
 object DataPoint{
 
-  def withRandomId(x: BigDecimal, y: BigDecimal) = DataPoint(UUID.randomUUID(), x, y)
+  def withRandomId(x: BigDecimal, y: BigDecimal) = DataPoint(x, y)
+
+  def getRandomBigDecimal(range: Range) =
+    BigDecimal(rnd.nextDouble()*(range.end - range.start) + range.start)
 
   def random(xRange: Range, yRange: Range) = {
-    val x = (math.random()*(xRange.end - xRange.start) + xRange.start).toInt
-    val y = (math.random()*(yRange.end - yRange.start) + yRange.start).toInt
+    val x = getRandomBigDecimal(xRange)
+    val y = getRandomBigDecimal(yRange)
     DataPoint.withRandomId(x, y)
   }
 }
 
-case class DataPoint(id: UUID, x: BigDecimal, y: BigDecimal) extends LOFDataPoint[DataPoint] {
-  override def distance(other: DataPoint): BigDecimal = DistanceAlgos.euclidean(this, other)
+case class DataPoint(x: BigDecimal, y: BigDecimal) extends LOFDataPoint[DataPoint] {
 
   override def toString: String = s"($x, $y)"
 
-  def appendDistance(distance: BigDecimal): DataPointWithDistance = DataPointWithDistance(id, x, y, distance)
+  def appendDistance(distance: BigDecimal): DataPointWithDistance = DataPointWithDistance(x, y, distance)
 }

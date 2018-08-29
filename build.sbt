@@ -1,4 +1,4 @@
-name := "knn-search-actors"
+name := "lofi-examples"
 
 version := "0.1"
 
@@ -11,3 +11,5 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.3",
   "org.apache.commons" % "commons-math3" % "3.3"
 )
+
+dependsOn(RootProject(uri("git://github.com/justinian336/lofi.git")))
