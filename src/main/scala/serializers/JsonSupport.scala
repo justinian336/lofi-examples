@@ -19,7 +19,7 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol{
     }
   }
 
-  implicit val dataPointFormat = jsonFormat3(DataPoint.apply)
-  implicit val dataPointWithDistanceFormat = jsonFormat4(DataPointWithDistance.apply)
+  implicit val dataPointFormat = jsonFormat(DataPoint.apply, "x", "y")
+  implicit val dataPointWithDistanceFormat = jsonFormat(DataPointWithDistance.apply, "x", "y", "distance")
   implicit val knnFormat = jsonFormat3(KNNResponse.apply)
 }
