@@ -13,4 +13,3 @@ libraryDependencies ++= Seq(
 )
 
 dependsOn(RootProject(uri("git://github.com/justinian336/lofi.git")))
-dependsOn(RootProject(uri("git://github.com/justinian336/trees.git")))

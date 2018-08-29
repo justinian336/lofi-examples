@@ -5,10 +5,8 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
-import datasources.{LOFKdTree, LOFList}
-import shapeless._
+import datasources.LOFKdTree
 
-import scala.concurrent.Future
 //import datasources.{LOFActor, LOFList}
 import models.{DataPoint, DataPointWithDistance}
 import serializers.JsonSupport
@@ -19,16 +17,12 @@ import scala.concurrent.ExecutionContext
 
 object Main extends App with JsonSupport{
 
-    val k = 50
-    val n = 20000
+  val k = 20
+  val n = 2000
 
-//  implicit val lofList: Future[LOFKdTree] = LOFKdTree.grow(dummyData)
   implicit val actorSystem: ActorSystem = ActorSystem("knn-search")
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val ctx: ExecutionContext = actorSystem.dispatcher
-  implicit val timeout: Timeout = Timeout(60 seconds)
-  val managerActor = actorSystem.actorOf(ManagerActor.props(), "manager")
-//  implicit val lofActor: LOFActor = LOFActor(managerActor)
 
   val nodes = 4
 
@@ -57,16 +51,14 @@ object Main extends App with JsonSupport{
           }
         } ~
         path("lop"){
-          parameters("x", "y"){(x, y)=>
-            val plof = DataPoint.withRandomId(BigDecimal(x), BigDecimal(y)).getLoOP(k, BigDecimal(1.96)).map(_.toString())
-            complete(plof)
+          withRequestTimeout(60 seconds){
+            parameters("x", "y"){(x, y)=>
+              val plof = DataPoint.withRandomId(BigDecimal(x), BigDecimal(y)).getLoOP(k, BigDecimal(1.96)).map(_.toString())
+              complete(plof)
+            }
           }
         }
     }
-
-    //  (managerActor ? Initialize(dummyData, nodes)).foreach{_=>
-    //    val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
-    //  }
 
     Http().bindAndHandle(route, "localhost", 8080)
   }
